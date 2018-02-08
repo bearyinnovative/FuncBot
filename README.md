@@ -2,8 +2,17 @@
 
 BearyChat FP(functional-programming) hubot SDK.
 
+## Installation
+### Swift Package Manager
+```Swift
+dependencies: [
+    .package(url: "https://github.com/bearyinnovative/FuncBot.git", from: "0.0.1"),
+]
+```
+
 ## Usage
 You just need to invoke only one function:
+
 ```Swift
 run(main, with: "your_rtm_token")
 ```
@@ -21,6 +30,15 @@ So you can loop to read hubot incoming messages and print it in the console.
 
 ---
 
+Call `Message.filter(to:)` to map JSON string to Normal incoming message.
+
+```Swift
+let main = RTM.loopToRead
+    >>- Message.filter(to: Message.Normal.self)
+    >>- Console.echoLn
+```
+
+---
 Call `RTM.sendMsg` to send `Outgoing` message.
 
 ```Swift
@@ -40,7 +58,7 @@ run(main, with: "your_rtm_token")
 
 ### Sample
 
-Create `百度百科` hubot.
+#### Create `百度百科` hubot.
 
 ```Swift
 let baike: (String) -> IO<String> = { keyword in
@@ -61,11 +79,29 @@ let baike: (String) -> IO<String> = { keyword in
 
 let main = RTM.loopToRead
     >>- Message.filter(for: Message.Normal.self)
-    >>- Message.replyBind(refer: true, baike)
+    >>- Message.replyBindText(refer: true, baike)
     >>- RTM.sendMsg
 
 run(main, with: "your_rtm_token")
+```
 
+#### Options
+
+```Swift
+let actions = [
+    "\\baike": baike(appId: "your_app_id"),
+    "\\huoxing": huoxing(appId: "your_app_id"),
+    "辣鸡": { _ in .return("闭嘴，无耻小人！") },
+    "苟": { _ in .return("利国家生死以") },
+    "岂": { _ in .return("因祸福避趋之") }
+]
+
+let main = RTM.loopToRead
+    >>- Message.filter(to: Message.Normal.self)
+    >>- Message.reply(with: actions, refer: true, empty: "唔知你讲咩~")
+    >>- RTM.sendMsg
+
+run(main, with: "your_rtm_token")
 ```
 
 
