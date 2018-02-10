@@ -7,8 +7,8 @@
 
 import Foundation
 
-final class HTTP {
-    static func request(path: String, body: Data?, method: String, completion: @escaping (Data) -> ()) {
+public final class HTTP {
+    public static func request(path: String, body: Data?, method: String, completion: @escaping (Data) -> ()) {
         guard let url = URL(string: path) else { print("Can't create URL!"); return }
         var request = URLRequest(url: url)
         request.httpMethod = method
