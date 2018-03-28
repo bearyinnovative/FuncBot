@@ -18,20 +18,39 @@ precedencegroup FunctorMap {
     higherThan: Bind
 }
 
-precedencegroup FunctionComposition {
-    associativity: right
+precedencegroup FunctionApplicative {
+    associativity: left
     higherThan: MultiplicationPrecedence
 }
 
+precedencegroup FunctionCompositionR {
+    associativity: right
+    higherThan: FunctionApplicative
+}
+
+precedencegroup FunctionCompositionL {
+    associativity: left
+    higherThan: FunctionCompositionR
+}
 
 infix operator <^> : FunctorMap
 infix operator <*> : FunctorMap
 infix operator >>- : Bind
-infix operator <- : FunctionComposition
+infix operator <<< : FunctionCompositionR
+infix operator >>> : FunctionCompositionL
+infix operator |> : FunctionApplicative
 
 // MARK: - Function
-public func <- <I, O, M>(lhs: @escaping (M) -> O, rhs: @escaping (I) -> (M)) -> (I) -> (O) {
+public func <<< <I, O, M>(lhs: @escaping (M) -> O, rhs: @escaping (I) -> (M)) -> (I) -> (O) {
     return { lhs(rhs($0)) }
+}
+
+public func >>> <I, O, M>(lhs: @escaping (I) -> M, rhs: @escaping (M) -> O) -> (I) -> O {
+    return { rhs(lhs($0)) }
+}
+
+public func |> <I, O>(lhs: I, rhs: (I) -> O) -> O {
+    return rhs(lhs)
 }
 
 // MARK: - IO

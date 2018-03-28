@@ -12,7 +12,11 @@ public protocol IncomingMessage {
 }
 
 public enum Message {
-    static var hubotId = ""
+    internal static var _hubotId = ""
+    
+    public static var hubotId: String {
+        return _hubotId
+    }
 }
 
 // MARK: - Incoming

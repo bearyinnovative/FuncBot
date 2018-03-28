@@ -5,7 +5,7 @@ public func run(_ io: IO<()>, with token: String) {
     guard let (rtmURL, hubotId) = HTTP.fetchRTMInfo(token: token) else {
         return
     }
-    Message.hubotId = hubotId
+    Message._hubotId = hubotId
     RTM.instance.connect(url: rtmURL)
     io.subscribe {
         print("------ Cycle \(cycleCount) ------")
